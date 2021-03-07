@@ -1,0 +1,185 @@
+call plug#begin('~/.vim/plugged')
+  Plug 'dracula/vim'
+  Plug 'scrooloose/nerdtree'
+  Plug 'ryanoasis/vim-devicons'
+  Plug 'StanAngeloff/php.vim'
+  Plug 'ncm2/ncm2'
+  Plug 'roxma/nvim-yarp'
+  Plug 'ncm2/ncm2-bufword'
+  Plug 'ncm2/ncm2-path'
+  Plug 'phpactor/phpactor', {'for': 'php', 'branch': 'master', 'do': 'composer install --no-dev -o'}
+  Plug 'phpactor/ncm2-phpactor'
+  Plug 'itchyny/lightline.vim'
+  Plug 'mattn/emmet-vim'
+  Plug 'pangloss/vim-javascript'
+  Plug 'yuezk/vim-js'
+  Plug 'maxmellon/vim-jsx-pretty'
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'neomake/neomake'
+call plug#end()
+
+"config
+" Go to tab by number
+noremap <leader>1 1gt
+noremap <leader>2 2gt
+noremap <leader>3 3gt
+noremap <leader>4 4gt
+noremap <leader>5 5gt
+noremap <leader>6 6gt
+noremap <leader>7 7gt
+noremap <leader>8 8gt
+noremap <leader>9 9gt
+noremap <leader>0 :tablast<cr>
+
+" ctrl-I to switch between vertical or
+" horizontal splitted windows {
+"map <C-I> <C-W><C-W>
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+"}
+
+"config neomake
+" Full config: when writing or reading a buffer, and on changes in insert and
+" normal mode (after 500ms; no delay when writing).
+call neomake#configure#automake('nrwi', 500)
+
+let g:coc_global_extensions = ['coc-emmet', 'coc-css', 'coc-html', 'coc-json', 'coc-prettier', 'coc-tsserver']
+let g:ycm_path_to_python_interpreter = '/usr/bin/python3'
+"let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_at_startup = 1
+let g:python3_host_prog = '/usr/bin/python3'
+"let g:python_host_prog = '/bin/python2'
+"vim-jsx-pretty
+let g:vim_jsx_pretty_colorful_config = 1
+let g:vim_jsx_pretty_template_tags = ['html', 'jsx']
+"Barra de estado
+set laststatus=2
+
+" Configuraciones emmet
+let g:user_emmet_install_global = 0
+autocmd FileType php,html,css,javascript EmmetInstall
+
+let g:user_emmet_leader_key='<C-X>'
+
+
+" Cargar fuente Powerline y símbolos (ver nota)
+let g:airline_powerline_fonts = 1
+
+"set noshowmode  " No mostrar el modo actual (ya lo muestra la barra de estado)
+
+"Pangloss/vim-javascript
+let g:javascript_plugin_jsdoc = 1
+
+"Config Section
+if (has("termguicolors"))
+ set termguicolors
+endif
+syntax on
+colorscheme dracula
+:set relativenumber
+:set number
+set sw=2
+filetype plugin on
+set omnifunc =syntaxcomplete#Complete
+
+"config nerdtree
+let g:NERDTreeShowHidden = 1
+let g:NERDTreeMinimalUI = 1
+let g:NERDTreeIgnore = []
+let g:NERDTreeStatusline = ''
+" Automaticaly close nvim if NERDTree is only thing left open
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" Toggle
+nnoremap <silent> <C-b> :NERDTreeToggle<CR>
+
+" open new split panes to right and below(terminal integrated)--------------------------------
+set splitright
+set splitbelow
+" turn terminal to normal mode with escape
+tnoremap <Esc> <C-\><C-n>
+" start terminal in insert mode
+au BufEnter * if &buftype == 'terminal' | :startinsert | endif
+" open terminal on ctrl+n
+function! OpenTerminal()
+  split term://bash
+  resize 10
+endfunction
+nnoremap <c-n> :call OpenTerminal()<CR>
+"end terminal integrated ****************************************************
+"config CTAGS
+au BufWritePost *.php silent! !eval '[ -f ".git/hooks/ctags" ] && .git/hooks/ctags' &
+" open new split panes to right and below(terminal integrated)--------------------------------
+set splitright
+set splitbelow
+" turn terminal to normal mode with escape
+tnoremap <Esc> <C-\><C-n>
+" start terminal in insert mode
+au BufEnter * if &buftype == 'terminal' | :startinsert | endif
+" open terminal on ctrl+n
+function! OpenTerminal()
+  split term://bash
+  resize 10
+endfunction
+nnoremap <c-n> :call OpenTerminal()<CR>
+"end terminal integrated ****************************************************
+"config CTAGS
+au BufWritePost *.php silent! !eval '[ -f ".git/hooks/ctags" ] && .git/hooks/ctags' &
+
+
+"Angelo marcado de sintaxis
+function! PhpSyntaxOverride()
+  " Put snippet overrides in this function.
+  hi! link phpDocTags phpDefine
+  hi! link phpDocParam phpType
+endfunction
+
+augroup phpSyntaxOverride
+  autocmd!
+  autocmd FileType php call PhpSyntaxOverride()
+augroup END
+
+"python3 path para
+"let g:python3_host_prog = /usr/bin/python3
+"
+autocmd BufEnter * call ncm2#enable_for_buffer()
+set completeopt=noinsert,menuone,noselect
+" suppress the annoying 'match x of y', 'The only match' and 'Pattern not
+    " found' messages
+    set shortmess+=c
+"Angelo marcado de sintaxis
+function! PhpSyntaxOverride()
+  " Put snippet overrides in this function.
+  hi! link phpDocTags phpDefine
+  hi! link phpDocParam phpType
+endfunction
+
+augroup phpSyntaxOverride
+  autocmd!
+  autocmd FileType php call PhpSyntaxOverride()
+augroup END
+
+"python3 path para
+"let g:python3_host_prog = /usr/bin/python3
+"
+autocmd BufEnter * call ncm2#enable_for_buffer()
+set completeopt=noinsert,menuone,noselect
+" suppress the annoying 'match x of y', 'The only match' and 'Pattern not
+    " found' messages
+    set shortmess+=c
+
+au User Ncm2Plugin call ncm2#register_source({
+            \ 'name' : 'css',
+            \ 'priority': 9,
+            \ 'subscope_enable': 1,
+            \ 'scope': ['css','scss'],
+            \ 'mark': 'css',
+            \ 'word_pattern': '[\w\-]+',
+            \ 'complete_pattern': ':\s*',
+            \ 'on_complete': ['ncm2#on_complete#omni', 'csscomplete#CompleteCSS'],
+            \ })
+autocmd BufEnter * call ncm2#enable_for_buffer()
+set completeopt=noinsert,menuone,noselect
+
+
